@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─────────────────────────────────────── */
+:root {
+  --bg: #0a0a0c;
+  --surface: #141418;
+  --surface2: #1c1c22;
+  --surface3: #242428;
+  --border: rgba(255, 255, 255, 0.07);
+  --accent: #f0b429;
+  --accent2: #e05c2a;
+  --text: #f0eff4;
+  --text-muted: #58586a;
+  --text-mid: #9090a8;
+  --correct: #4ade80;
+  --wrong: #f87171;
+}
+
+/* ─── Base Reset ─────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── App Shell ──────────────────────────────────────────── */
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* On desktop, center a 390px column */
+}
+
+.app-shell {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  height: 100dvh;
+  overflow: hidden;
+  /* Phone-sized gold glow background */
+  background:
+    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(240, 180, 41, 0.12) 0%, transparent 70%),
+    #06060a;
+}
+
+/* ─── Gold Rule (horizontal separator) ──────────────────── */
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--accent) 20%,
+    var(--accent) 80%,
+    transparent 100%
+  );
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+/* ─── Wordmark ───────────────────────────────────────────── */
+.wordmark {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.wordmark-grade {
+  color: var(--text-mid);
+}
+
+.wordmark-it {
+  color: var(--accent);
+  font-style: italic;
+}
+
+/* ─── Bottom Sheet ───────────────────────────────────────── */
+.reveal-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-radius: 16px 16px 0 0;
+  border-top: 1px solid var(--border);
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+  z-index: 50;
+}
+
+.reveal-sheet.open {
+  transform: translateY(0);
+}
+
+/* ─── Frosted Glass Tray ─────────────────────────────────── */
+.frosted-tray {
+  background: rgba(28, 28, 34, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
