@@ -45,18 +45,13 @@ body {
 /* ─── App Shell ──────────────────────────────────────────── */
 #root {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  /* On desktop, center a 390px column */
 }
 
 .app-shell {
   position: relative;
   width: 100%;
-  max-width: 390px;
   height: 100dvh;
   overflow: hidden;
-  /* Phone-sized gold glow background */
   background:
     radial-gradient(ellipse 60% 30% at 50% 0%, rgba(240, 180, 41, 0.12) 0%, transparent 70%),
     #06060a;
