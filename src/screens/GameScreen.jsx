@@ -34,7 +34,7 @@ export default function GameScreen() {
   return (
     <div className="relative flex flex-col h-full">
       {/* ── Top section ─────────────────────────────── */}
-      <TopBar score={score} round={round} card={cardPair?.cardA} />
+      <TopBar score={score} card={cardPair?.cardA} />
       <div className="gold-rule" />
 
       {/* ── Comparison area ──────────────────────────── */}

@@ -93,32 +93,51 @@ export default function CardComparison({ cardPair = null, revealed = false }) {
             <ZoomablePanel card={cardB} label="B" imageFit={imageFit} revealed={revealed} isWinner={isWinnerB} {...shared} />
           )}
 
-          {/* A / B toggle pill */}
-          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 flex rounded-full overflow-hidden"
-               style={{ border: '1px solid var(--border)' }}>
+          {/* A / B sliding toggle */}
+          <div
+            className="absolute bottom-14 left-1/2 -translate-x-1/2 z-20 flex"
+            style={{
+              background: 'rgba(14,14,18,0.75)',
+              backdropFilter: 'blur(14px)',
+              WebkitBackdropFilter: 'blur(14px)',
+              border: '1px solid var(--border)',
+              borderRadius: 999,
+              padding: 3,
+              position: 'absolute',
+            }}
+          >
+            {/* Sliding accent indicator */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 3, bottom: 3,
+                width: 'calc(50% - 3px)',
+                left: overlayCard === 'A' ? 3 : 'calc(50%)',
+                background: 'var(--accent)',
+                borderRadius: 999,
+                transition: 'left 0.18s cubic-bezier(.4,0,.2,1)',
+                pointerEvents: 'none',
+              }}
+            />
             {['A', 'B'].map(id => (
               <button
                 key={id}
                 onClick={() => setOverlayCard(id)}
-                className="px-6 py-2 font-condensed font-bold text-sm tracking-wider transition-colors"
+                className="font-condensed font-bold tracking-widest uppercase"
                 style={{
-                  background: overlayCard === id ? 'var(--accent)' : 'var(--surface3)',
-                  color:      overlayCard === id ? 'var(--bg)'     : 'var(--text-muted)',
+                  position: 'relative',
+                  zIndex: 1,
+                  width: 52,
+                  height: 36,
+                  fontSize: 13,
+                  color: overlayCard === id ? 'var(--bg)' : 'var(--text-muted)',
+                  transition: 'color 0.18s ease',
+                  borderRadius: 999,
                 }}
               >
-                Card {id}
+                {id}
               </button>
             ))}
-          </div>
-
-          {/* Current card label (top corner) */}
-          <div className="absolute top-3 left-3 z-20">
-            <span
-              className="font-condensed font-bold text-xs tracking-widest uppercase px-2 py-0.5 rounded"
-              style={{ background: 'var(--surface3)', color: 'var(--text-muted)' }}
-            >
-              Card {overlayCard}
-            </span>
           </div>
         </div>
 

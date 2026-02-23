@@ -8,14 +8,14 @@ import { useNavigate } from 'react-router-dom'
  *   • Score display: "34 / 51" + accuracy chip + rank badge
  *   • Card identity: "NOW GRADING" eyebrow + player name + meta pills
  */
-export default function TopBar({ score = { correct: 0, total: 0 }, round = 1, card = null }) {
+export default function TopBar({ score = { correct: 0, total: 0 }, card = null }) {
   const navigate = useNavigate()
   const accuracy = score.total > 0 ? Math.round((score.correct / score.total) * 100) : 0
   const rank = getRank(accuracy, score.total)
 
   return (
-    <div className="flex flex-col px-4 pt-3 pb-2 gap-1" style={{ minHeight: 148 }}>
-      {/* Row 1: wordmark + back */}
+    <div className="flex flex-col px-4 pt-3 pb-2 gap-2">
+      {/* Row 1: wordmark + quit */}
       <div className="flex items-center justify-between">
         <span className="wordmark text-lg">
           <span className="wordmark-grade">Grade</span>
@@ -29,42 +29,44 @@ export default function TopBar({ score = { correct: 0, total: 0 }, round = 1, ca
         </button>
       </div>
 
-      {/* Row 2: score */}
-      <div className="flex items-center gap-2">
-        <span className="font-condensed font-bold text-xl text-text">
-          {score.correct} / {score.total}
-        </span>
-        <span
-          className="text-xs font-condensed font-semibold px-2 py-0.5 rounded-full"
-          style={{ background: 'var(--surface3)', color: 'var(--text-mid)' }}
-        >
-          {accuracy}%
-        </span>
-        {rank && (
-          <span
-            className="text-xs font-condensed font-semibold px-2 py-0.5 rounded-full"
-            style={{ border: '1px solid var(--accent)', color: 'var(--accent)' }}
-          >
-            {rank}
+      {/* Row 2: card identity (left) + score (right) */}
+      <div className="flex items-start justify-between gap-3">
+        {/* Card identity */}
+        <div className="flex flex-col gap-1 min-w-0">
+          <span className="font-condensed font-bold text-lg leading-tight text-text truncate">
+            {card?.playerName ?? 'Loading…'}
           </span>
-        )}
-      </div>
+          {card && (
+            <div className="flex gap-1 flex-wrap">
+              <MetaPill>{card.year ?? '—'}</MetaPill>
+              <MetaPill>{card.set ?? '—'}</MetaPill>
+              <MetaPill>{card.gradingCompany ?? '—'}</MetaPill>
+            </div>
+          )}
+        </div>
 
-      {/* Row 3: card identity */}
-      <div className="flex flex-col gap-0.5 mt-auto">
-        <span className="text-[10px] font-condensed tracking-[0.15em] uppercase text-text-muted">
-          Now Grading · Round {round}
-        </span>
-        <span className="font-condensed font-bold text-lg leading-tight text-text truncate">
-          {card?.playerName ?? 'Loading…'}
-        </span>
-        {card && (
-          <div className="flex gap-1 flex-wrap">
-            <MetaPill>{card.year ?? '—'}</MetaPill>
-            <MetaPill>{card.set ?? '—'}</MetaPill>
-            <MetaPill>{card.gradingCompany ?? '—'}</MetaPill>
+        {/* Score */}
+        <div className="flex flex-col items-end gap-1 flex-shrink-0">
+          <span className="font-condensed font-bold text-xl leading-none text-text">
+            {score.correct} / {score.total}
+          </span>
+          <div className="flex items-center gap-1">
+            <span
+              className="text-xs font-condensed font-semibold px-2 py-0.5 rounded-full"
+              style={{ background: 'var(--surface3)', color: 'var(--text-mid)' }}
+            >
+              {accuracy}%
+            </span>
+            {rank && (
+              <span
+                className="text-xs font-condensed font-semibold px-2 py-0.5 rounded-full"
+                style={{ border: '1px solid var(--accent)', color: 'var(--accent)' }}
+              >
+                {rank}
+              </span>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   )

@@ -19,7 +19,8 @@ const MAX_SCALE = 4
  *
  * Props:
  *   transform / setTransform / reset  — from useSharedTransform (shared state)
- *   card, label, revealed, isWinner   — forwarded to CardPanel
+ *   card, label, imageFit             — forwarded to CardPanel
+ *   revealed, isWinner                — control fixed overlays (badge, glow)
  */
 export default function ZoomablePanel({
   card = null,
@@ -182,13 +183,49 @@ export default function ZoomablePanel({
           transition: isZoomed ? 'none' : 'transform 0.25s ease',
         }}
       >
-        <CardPanel card={card} label={label} imageFit={imageFit} revealed={revealed} isWinner={isWinner} />
+        <CardPanel card={card} label={label} imageFit={imageFit} />
       </div>
+
+      {/* ── Fixed overlays — outside transform, stay put while card pans ── */}
+
+      {/* A / B badge — top-left corner */}
+      <div className="absolute top-2 left-2 z-20 pointer-events-none">
+        <span
+          className="font-condensed font-bold text-xs tracking-widest uppercase px-2 py-0.5 rounded"
+          style={{ background: 'var(--surface3)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}
+        >
+          {label}
+        </span>
+      </div>
+
+      {/* Winner glow border */}
+      {revealed && isWinner && (
+        <div
+          className="absolute inset-0 z-10 pointer-events-none rounded-sm"
+          style={{ boxShadow: 'inset 0 0 0 3px var(--accent)' }}
+        />
+      )}
+
+      {/* Grade badge — bottom-center, shown after reveal */}
+      {revealed && card?.grade != null && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+          <span
+            className="font-condensed font-bold text-sm px-3 py-1 rounded"
+            style={{
+              background: isWinner ? 'var(--accent)' : 'var(--surface3)',
+              color:      isWinner ? 'var(--bg)'     : 'var(--text-muted)',
+              border:     isWinner ? 'none'           : '1px solid var(--border)',
+            }}
+          >
+            {card.gradingCompany} {card.grade}
+          </span>
+        </div>
+      )}
 
       {/* "Reset" pill — visible only when zoomed in */}
       {isZoomed && (
         <button
-          className="absolute top-2 right-2 z-10 text-[10px] font-condensed px-2 py-0.5 rounded-full"
+          className="absolute top-2 right-2 z-30 text-[10px] font-condensed px-2 py-0.5 rounded-full"
           style={{ background: 'var(--surface3)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}
           onClick={e => { e.stopPropagation(); reset() }}
         >
