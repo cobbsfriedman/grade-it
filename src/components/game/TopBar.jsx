@@ -17,69 +17,55 @@ export default function TopBar({ score = { correct: 0, total: 0 }, card = null }
     <div className="flex flex-col px-4 pt-3 pb-2 gap-2">
       {/* Row 1: wordmark + quit */}
       <div className="flex items-center justify-between">
-        <span className="wordmark text-lg">
+        <span className="wordmark text-sm">
           <span className="wordmark-grade">Grade</span>
           <span className="wordmark-it"> It</span>
         </span>
         <button
           onClick={() => navigate('/')}
-          className="text-text-muted text-sm font-condensed tracking-wide"
+          className="text-text-muted text-xs font-condensed tracking-wide"
         >
           ✕ Quit
         </button>
       </div>
 
       {/* Row 2: card identity (left) + score (right) */}
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-center justify-between gap-3">
         {/* Card identity */}
-        <div className="flex flex-col gap-1 min-w-0">
-          <span className="font-condensed font-bold text-lg leading-tight text-text truncate">
+        <div className="flex flex-col gap-0.5 min-w-0">
+          <span className="font-condensed font-bold leading-tight text-text truncate" style={{ fontSize: '1.7rem' }}>
             {card?.playerName ?? 'Loading…'}
           </span>
           {card && (
-            <div className="flex gap-1 flex-wrap">
-              <MetaPill>{card.year ?? '—'}</MetaPill>
-              <MetaPill>{card.set ?? '—'}</MetaPill>
-              <MetaPill>{card.gradingCompany ?? '—'}</MetaPill>
-            </div>
+            <span className="font-condensed text-sm truncate" style={{ color: 'var(--text-muted)' }}>
+              {card.year ?? '—'} · {card.set ?? '—'} · {card.gradingCompany ?? '—'}
+            </span>
           )}
         </div>
 
-        {/* Score */}
-        <div className="flex flex-col items-end gap-1 flex-shrink-0">
-          <span className="font-condensed font-bold text-xl leading-none text-text">
+        {/* Score — single row with subtle background */}
+        <div
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg flex-shrink-0"
+          style={{ background: 'var(--surface2)' }}
+        >
+          <span className="font-condensed font-bold text-base leading-none text-text">
             {score.correct} / {score.total}
           </span>
-          <div className="flex items-center gap-1">
-            <span
-              className="text-xs font-condensed font-semibold px-2 py-0.5 rounded-full"
-              style={{ background: 'var(--surface3)', color: 'var(--text-mid)' }}
-            >
-              {accuracy}%
-            </span>
-            {rank && (
-              <span
-                className="text-xs font-condensed font-semibold px-2 py-0.5 rounded-full"
-                style={{ border: '1px solid var(--accent)', color: 'var(--accent)' }}
-              >
+          <span style={{ color: 'var(--border)', fontSize: 10 }}>|</span>
+          <span className="font-condensed text-sm" style={{ color: 'var(--text-mid)' }}>
+            {accuracy}%
+          </span>
+          {rank && (
+            <>
+              <span style={{ color: 'var(--border)', fontSize: 10 }}>|</span>
+              <span className="font-condensed text-sm" style={{ color: 'var(--accent)' }}>
                 {rank}
               </span>
-            )}
-          </div>
+            </>
+          )}
         </div>
       </div>
     </div>
-  )
-}
-
-function MetaPill({ children }) {
-  return (
-    <span
-      className="text-[10px] font-condensed px-1.5 py-0.5 rounded"
-      style={{ background: 'var(--surface3)', color: 'var(--text-mid)' }}
-    >
-      {children}
-    </span>
   )
 }
 

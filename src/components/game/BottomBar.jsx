@@ -16,7 +16,7 @@ export default function BottomBar({ onGuess, disabled = false }) {
       style={{ minHeight: 148 }}
     >
       {/* Prompt */}
-      <p className="text-center font-condensed text-base tracking-wide text-text-mid uppercase">
+      <p className="text-center font-condensed text-3xl font-bold tracking-wide text-text uppercase">
         Which card graded higher?
       </p>
 
@@ -30,21 +30,22 @@ export default function BottomBar({ onGuess, disabled = false }) {
 }
 
 function GuessButton({ label, choice, onGuess, disabled }) {
+  const colors = {
+    A: { bg: '#1a3a5c', border: '#2a5a8c', text: '#7ec8f0' },
+    B: { bg: '#3a1a0a', border: '#8c3a10', text: '#f0a060' },
+  }
+  const c = colors[choice]
+
   return (
     <button
       onClick={() => !disabled && onGuess(choice)}
       disabled={disabled}
-      className="
-        flex-1 py-3
-        font-condensed font-semibold text-lg tracking-widest uppercase
-        rounded-xl
-        transition-all active:scale-95
-      "
+      className="flex-1 py-3 font-condensed font-bold text-lg tracking-widest uppercase rounded-xl transition-all active:scale-95"
       style={{
-        background: 'var(--surface2)',
-        color: disabled ? 'var(--text-muted)' : 'var(--text)',
-        border: '1px solid var(--border)',
-        cursor: disabled ? 'default' : 'pointer',
+        background: disabled ? 'var(--surface2)' : c.bg,
+        color:      disabled ? 'var(--text-muted)' : c.text,
+        border:     `1px solid ${disabled ? 'var(--border)' : c.border}`,
+        cursor:     disabled ? 'default' : 'pointer',
       }}
     >
       {label}

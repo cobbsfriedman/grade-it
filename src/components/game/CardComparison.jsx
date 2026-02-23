@@ -93,28 +93,27 @@ export default function CardComparison({ cardPair = null, revealed = false }) {
             <ZoomablePanel card={cardB} label="B" imageFit={imageFit} revealed={revealed} isWinner={isWinnerB} {...shared} />
           )}
 
-          {/* A / B sliding toggle */}
+          {/* A / B sliding toggle — top-right */}
           <div
-            className="absolute bottom-14 left-1/2 -translate-x-1/2 z-20 flex"
+            className="absolute top-3 right-3 z-20 flex"
             style={{
-              background: 'rgba(14,14,18,0.75)',
+              background: 'rgba(14,14,18,0.82)',
               backdropFilter: 'blur(14px)',
               WebkitBackdropFilter: 'blur(14px)',
               border: '1px solid var(--border)',
-              borderRadius: 999,
-              padding: 3,
-              position: 'absolute',
+              borderRadius: 8,
+              padding: 2,
             }}
           >
-            {/* Sliding accent indicator */}
+            {/* Sliding indicator */}
             <div
               style={{
                 position: 'absolute',
-                top: 3, bottom: 3,
-                width: 'calc(50% - 3px)',
-                left: overlayCard === 'A' ? 3 : 'calc(50%)',
+                top: 2, bottom: 2,
+                width: 'calc(50% - 2px)',
+                left: overlayCard === 'A' ? 2 : 'calc(50%)',
                 background: 'var(--accent)',
-                borderRadius: 999,
+                borderRadius: 6,
                 transition: 'left 0.18s cubic-bezier(.4,0,.2,1)',
                 pointerEvents: 'none',
               }}
@@ -123,16 +122,16 @@ export default function CardComparison({ cardPair = null, revealed = false }) {
               <button
                 key={id}
                 onClick={() => setOverlayCard(id)}
-                className="font-condensed font-bold tracking-widest uppercase"
+                className="font-condensed font-bold tracking-wider"
                 style={{
                   position: 'relative',
                   zIndex: 1,
-                  width: 52,
-                  height: 36,
-                  fontSize: 13,
+                  width: 36,
+                  height: 28,
+                  fontSize: 12,
                   color: overlayCard === id ? 'var(--bg)' : 'var(--text-muted)',
                   transition: 'color 0.18s ease',
-                  borderRadius: 999,
+                  borderRadius: 6,
                 }}
               >
                 {id}
