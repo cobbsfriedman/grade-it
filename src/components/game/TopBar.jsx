@@ -1,30 +1,20 @@
-import { useNavigate } from 'react-router-dom'
-
 /**
  * TopBar — top section
  *
- * Row 1: Wordmark (left) + quit (right)
- * Row 2: Card identity (left) + score (right)
+ * Row 1: Wordmark (left) + score (right)
  */
 export default function TopBar({ score = { correct: 0, total: 0 }, card = null }) {
-  const navigate = useNavigate()
   const accuracy = score.total > 0 ? Math.round((score.correct / score.total) * 100) : 0
   const rank = getRank(accuracy, score.total)
 
   return (
     <div className="flex flex-col px-4 pt-3 pb-2 gap-2">
-      {/* Row 1: wordmark + quit */}
-      <div className="flex items-center justify-between">
+      {/* Row 1: wordmark */}
+      <div className="flex items-center">
         <span className="wordmark text-sm">
           <span className="wordmark-grade">Grade</span>
           <span className="wordmark-it"> It</span>
         </span>
-        <button
-          onClick={() => navigate('/')}
-          className="text-text-muted text-xs font-condensed tracking-wide"
-        >
-          ✕ Quit
-        </button>
       </div>
 
       {/* Row 2: card identity (left) + score (right) */}
