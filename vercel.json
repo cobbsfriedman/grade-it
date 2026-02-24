@@ -3,7 +3,8 @@
     { "source": "/", "destination": "https://cobbsfriedman.com", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/projects/grade-it/(.*)", "destination": "/index.html" },
-    { "source": "/projects/grade-it",     "destination": "/index.html" }
+    { "source": "/projects/grade-it/assets/(.*)", "destination": "/assets/$1" },
+    { "source": "/projects/grade-it/(.*)",        "destination": "/index.html" },
+    { "source": "/projects/grade-it",             "destination": "/index.html" }
   ]
 }
