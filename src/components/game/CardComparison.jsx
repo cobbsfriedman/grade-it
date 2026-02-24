@@ -28,6 +28,7 @@ export default function CardComparison({
   const shared    = { transform, setTransform, reset }
 
   const imageFit =
+    revealed           ? 'contain'      :
     mode === 'side'    ? 'cover-left'   :
     mode === 'stack'   ? 'cover-bottom' :
     'contain'
