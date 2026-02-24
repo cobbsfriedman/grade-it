@@ -118,7 +118,7 @@ export default function CardControls({
 
   return (
     <div
-      className="flex items-center justify-end pr-4"
+      className="flex items-center justify-center"
       style={{ height: 56, flexShrink: 0, gap: 0 }}
     >
       <ViewModeIcons />

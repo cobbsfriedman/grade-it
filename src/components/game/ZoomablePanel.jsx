@@ -254,16 +254,6 @@ export default function ZoomablePanel({
         </div>
       )}
 
-      {/* "Reset" pill — visible only when zoomed in */}
-      {isZoomed && (
-        <button
-          className="absolute top-2 right-2 z-30 text-[10px] font-condensed px-2 py-0.5 rounded-full"
-          style={{ background: 'var(--surface3)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}
-          onClick={e => { e.stopPropagation(); reset() }}
-        >
-          reset
-        </button>
-      )}
     </div>
   )
 }
