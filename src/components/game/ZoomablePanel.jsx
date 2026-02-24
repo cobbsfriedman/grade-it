@@ -80,16 +80,13 @@ export default function ZoomablePanel({
       const list = Array.from(e.touches)
 
       if (list.length === 1) {
-        // Single finger: pan (only when zoomed in)
+        // Single finger: pan
         const t = list[0]
         const prev = touchPoints[t.identifier]
         if (prev) {
           const dx = t.clientX - prev.x
           const dy = t.clientY - prev.y
-          setTransformRef.current(s => {
-            if (s.scale <= MIN_SCALE) return s
-            return { ...s, x: s.x + dx, y: s.y + dy }
-          })
+          setTransformRef.current(s => ({ ...s, x: s.x + dx, y: s.y + dy }))
           touchPoints[t.identifier] = { x: t.clientX, y: t.clientY }
         }
 
@@ -145,10 +142,7 @@ export default function ZoomablePanel({
     const dx = e.clientX - drag.current.x
     const dy = e.clientY - drag.current.y
     drag.current = { active: true, x: e.clientX, y: e.clientY }
-    setTransform(prev => {
-      if (prev.scale <= MIN_SCALE) return prev
-      return { ...prev, x: prev.x + dx, y: prev.y + dy }
-    })
+    setTransform(prev => ({ ...prev, x: prev.x + dx, y: prev.y + dy }))
   }
   function onMouseUp() { drag.current.active = false }
 
@@ -188,15 +182,17 @@ export default function ZoomablePanel({
 
       {/* ── Fixed overlays — outside transform, stay put while card pans ── */}
 
-      {/* A / B badge — top-left corner */}
-      <div className="absolute top-2 left-2 z-20 pointer-events-none">
-        <span
-          className="font-condensed font-bold text-xs tracking-widest uppercase px-2 py-0.5 rounded"
-          style={{ background: 'var(--surface3)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}
-        >
-          {label}
-        </span>
-      </div>
+      {/* A / B badge — bottom-center, shown before reveal */}
+      {!revealed && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+          <span
+            className="font-condensed font-bold text-xs tracking-widest uppercase px-2 py-0.5 rounded"
+            style={{ background: 'var(--surface3)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}
+          >
+            {label}
+          </span>
+        </div>
+      )}
 
       {/* Winner glow border */}
       {revealed && isWinner && (

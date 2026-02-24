@@ -93,9 +93,9 @@ export default function CardComparison({ cardPair = null, revealed = false }) {
             <ZoomablePanel card={cardB} label="B" imageFit={imageFit} revealed={revealed} isWinner={isWinnerB} {...shared} />
           )}
 
-          {/* A / B sliding toggle — top-right */}
+          {/* A / B sliding toggle — top-left (ViewModeTray owns top-right) */}
           <div
-            className="absolute top-3 right-3 z-20 flex"
+            className="absolute top-3 left-3 z-20 flex"
             style={{
               background: 'rgba(14,14,18,0.82)',
               backdropFilter: 'blur(14px)',

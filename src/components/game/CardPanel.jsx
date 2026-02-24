@@ -1,14 +1,18 @@
 /**
- * CardPanel — the card image, sized to overflow the panel so the
- * zoom/pan system can reveal the full card.
+ * CardPanel — the card image, sized to fill the panel.
  *
- * imageFit controls the initial crop anchor (not a permanent crop):
- *   'cover-left'    fills panel height, left edge visible, right overflows → pan left to reveal
- *   'cover-bottom'  fills panel width, bottom edge visible, top overflows  → pan down to reveal
- *   'contain'       whole card visible (overlay / full mode)
+ * Pre-reveal: always uses height:125%/bottom:0/centered so the PSA/BGS
+ * grade label (top ~17% of Fanatics vault images) sits above the panel
+ * boundary and is hidden by the container's overflow-hidden. No clip-path,
+ * no blank space.
  *
- * The A/B badge, grade badge, and winner glow all live in ZoomablePanel
- * (outside the transform) so they stay fixed while the card pans.
+ * Post-reveal: switches to the selected imageFit mode so the full slab
+ * (including grade label) is visible.
+ *
+ * imageFit (post-reveal only):
+ *   'cover-left'   fills panel height, left-anchored, right overflows
+ *   'cover-bottom' fills panel width, bottom-anchored, top overflows
+ *   'contain'      whole card visible with letterbox
  */
 export default function CardPanel({
   card     = null,
@@ -19,34 +23,35 @@ export default function CardPanel({
   const imageUrl    = card?.images?.front ?? null
   const placeholder = label === 'A' ? '/placeholder-a.png' : '/placeholder-b.png'
 
-  // Clip the top 20% of the image to hide the PSA/BGS grade label on slab photos.
-  // clip-path lives on the image element itself, so it moves with the card during
-  // pan/zoom — unlike a fixed overlay which can be bypassed by panning.
-  // Fanatics vault images are consistently framed with the label at top ~17%.
-  const labelClip = (!revealed && imageUrl) ? 'inset(20% 0 0 0)' : undefined
-
-  // Image style varies by mode so the right edge/bottom overflows the panel
-  // and can be revealed by panning, rather than being permanently cropped.
   let imgStyle = {}
 
-  if (imageFit === 'cover-left') {
-    // Fill panel height; natural width extends right → pan left to see more.
-    // maxWidth: none overrides Tailwind Preflight's `max-width: 100%` which
-    // would otherwise cap the width and cause the image to stretch.
-    imgStyle = { position: 'absolute', height: '100%', width: 'auto', maxWidth: 'none', top: 0, left: 0, clipPath: labelClip }
+  if (!revealed && imageUrl) {
+    // Fill panel height + 25% extra pushed above the top edge.
+    // Label lives in that top 25% → hidden by container overflow-hidden.
+    // Centered horizontally so the card face is in view.
+    imgStyle = {
+      position:  'absolute',
+      height:    '125%',
+      width:     'auto',
+      maxWidth:  'none',
+      maxHeight: 'none',
+      bottom:    0,
+      left:      '50%',
+      transform: 'translateX(-50%)',
+    }
+
+  } else if (imageFit === 'cover-left') {
+    imgStyle = { position: 'absolute', height: '100%', width: 'auto', maxWidth: 'none', top: 0, left: 0 }
 
   } else if (imageFit === 'cover-bottom') {
-    // Fill panel width; natural height extends up → pan down to see more.
-    // maxHeight: none overrides Tailwind Preflight's `height: auto` default.
-    imgStyle = { position: 'absolute', width: '100%', height: 'auto', maxHeight: 'none', bottom: 0, left: 0, clipPath: labelClip }
+    imgStyle = { position: 'absolute', width: '100%', height: 'auto', maxHeight: 'none', bottom: 0, left: 0 }
 
   } else {
-    // contain — whole card visible at once
-    imgStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', clipPath: labelClip }
+    // contain — whole card visible
+    imgStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }
   }
 
   return (
-    // No overflow-hidden here — the ZoomablePanel container handles clipping
     <div className="relative w-full h-full">
       <img
         src={imageUrl ?? placeholder}
