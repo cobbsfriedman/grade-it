@@ -1,13 +1,19 @@
+import { useState } from 'react'
+
 /**
  * CardPanel — the card image, sized to fill the panel.
  *
- * Pre-reveal: always uses height:125%/bottom:0/centered so the PSA/BGS
- * grade label (top ~17% of Fanatics vault images) sits above the panel
- * boundary and is hidden by the container's overflow-hidden. No clip-path,
- * no blank space.
+ * Pre-reveal: hides the PSA/BGS grade label using overflow-hidden geometry.
+ *   Portrait (tall) slab: label is at the TOP  → height:125%, bottom:0, centered horizontally
+ *   Landscape (wide) slab: label is on the RIGHT → width:125%, left:0, centered vertically
+ *   Orientation is detected from the image's natural dimensions on load.
  *
  * Post-reveal: switches to the selected imageFit mode so the full slab
  * (including grade label) is visible.
+ *
+ * Props:
+ *   onOrientation(isLandscape) — called once after the image loads so
+ *     ZoomablePanel can apply the correct pan clamp axis.
  *
  * imageFit (post-reveal only):
  *   'cover-left'   fills panel height, left-anchored, right overflows
@@ -15,29 +21,55 @@
  *   'contain'      whole card visible with letterbox
  */
 export default function CardPanel({
-  card     = null,
-  label    = 'A',
-  imageFit = 'cover-left',
-  revealed = false,
+  card          = null,
+  label         = 'A',
+  imageFit      = 'cover-left',
+  revealed      = false,
+  onOrientation = null,
 }) {
+  const [isLandscape, setIsLandscape] = useState(false)
+
   const imageUrl    = card?.images?.front ?? null
   const placeholder = label === 'A' ? '/placeholder-a.png' : '/placeholder-b.png'
+
+  function handleLoad(e) {
+    const img = e.currentTarget
+    const landscape = img.naturalWidth > img.naturalHeight
+    setIsLandscape(landscape)
+    onOrientation?.(landscape)
+  }
 
   let imgStyle = {}
 
   if (!revealed && imageUrl) {
-    // Fill panel height + 25% extra pushed above the top edge.
-    // Label lives in that top 25% → hidden by container overflow-hidden.
-    // Centered horizontally so the card face is in view.
-    imgStyle = {
-      position:  'absolute',
-      height:    '125%',
-      width:     'auto',
-      maxWidth:  'none',
-      maxHeight: 'none',
-      bottom:    0,
-      left:      '50%',
-      transform: 'translateX(-50%)',
+    if (isLandscape) {
+      // Landscape slab: label is on the RIGHT side.
+      // Make image 125% wide anchored at left → right 25% (with label) overflows.
+      // Center vertically so the card face fills the panel.
+      imgStyle = {
+        position:  'absolute',
+        width:     '125%',
+        height:    'auto',
+        maxWidth:  'none',
+        maxHeight: 'none',
+        left:      0,
+        top:       '50%',
+        transform: 'translateY(-50%)',
+      }
+    } else {
+      // Portrait slab: label is at the TOP.
+      // Make image 125% tall anchored at bottom → top 25% (with label) overflows.
+      // Center horizontally so the card face fills the panel.
+      imgStyle = {
+        position:  'absolute',
+        height:    '125%',
+        width:     'auto',
+        maxWidth:  'none',
+        maxHeight: 'none',
+        bottom:    0,
+        left:      '50%',
+        transform: 'translateX(-50%)',
+      }
     }
 
   } else if (imageFit === 'cover-left') {
@@ -58,6 +90,7 @@ export default function CardPanel({
         alt={`Card ${label}`}
         style={imgStyle}
         draggable={false}
+        onLoad={handleLoad}
         onError={e => { e.currentTarget.style.display = 'none' }}
       />
     </div>

@@ -38,18 +38,32 @@ export default function ZoomablePanel({
   const setTransformRef = useRef(setTransform)
   const resetRef        = useRef(reset)
   const revealedRef     = useRef(revealed)
+  const isLandscapeRef  = useRef(false)
   useEffect(() => { setTransformRef.current = setTransform }, [setTransform])
   useEffect(() => { resetRef.current = reset }, [reset])
   useEffect(() => { revealedRef.current = revealed }, [revealed])
 
-  // Clamp y so the grade label (top 17% of the 125%-tall image) can never
-  // be dragged into the visible panel area. Derived from the image geometry:
+  function handleOrientation(isLandscape) {
+    isLandscapeRef.current = isLandscape
+  }
+
+  // Portrait cards: clamp y so the label (top of 125%-tall image) can't be
+  // dragged down into the visible panel.
   //   label_bottom_in_panel = H × (0.5375 × scale − 0.5) + y
-  // Keeping y ≤ H × (0.5375 × scale − 0.5) keeps label_bottom ≤ 0.
+  //   Keeping y ≤ that value keeps label_bottom ≤ 0.
   function clampY(y, scale) {
-    if (revealedRef.current) return y
+    if (revealedRef.current || isLandscapeRef.current) return y
     const H = containerRef.current?.clientHeight ?? 0
     return Math.min(y, Math.max(0, H * (0.5375 * scale - 0.5)))
+  }
+
+  // Landscape cards: clamp x so the label (right side of 125%-wide image)
+  // can't be dragged left into the visible panel.
+  //   Symmetric formula: minX = −W × (0.5375 × scale − 0.5)
+  function clampX(x, scale) {
+    if (revealedRef.current || !isLandscapeRef.current) return x
+    const W = containerRef.current?.clientWidth ?? 0
+    return Math.max(x, -(W * (0.5375 * scale - 0.5)))
   }
 
   // ── Touch / wheel event listeners (passive:false so we can preventDefault) ──
@@ -67,7 +81,12 @@ export default function ZoomablePanel({
       setTransformRef.current(prev => {
         const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, prev.scale * factor))
         if (newScale <= MIN_SCALE) return { scale: MIN_SCALE, x: 0, y: 0 }
-        return { ...prev, scale: newScale, y: clampY(prev.y, newScale) }
+        return {
+          ...prev,
+          scale: newScale,
+          x: clampX(prev.x, newScale),
+          y: clampY(prev.y, newScale),
+        }
       })
     }
 
@@ -98,7 +117,11 @@ export default function ZoomablePanel({
         if (prev) {
           const dx = t.clientX - prev.x
           const dy = t.clientY - prev.y
-          setTransformRef.current(s => ({ ...s, x: s.x + dx, y: clampY(s.y + dy, s.scale) }))
+          setTransformRef.current(s => ({
+            ...s,
+            x: clampX(s.x + dx, s.scale),
+            y: clampY(s.y + dy, s.scale),
+          }))
           touchPoints[t.identifier] = { x: t.clientX, y: t.clientY }
         }
 
@@ -115,7 +138,12 @@ export default function ZoomablePanel({
             setTransformRef.current(s => {
               const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, s.scale * factor))
               if (newScale <= MIN_SCALE) return { scale: MIN_SCALE, x: 0, y: 0 }
-              return { ...s, scale: newScale, y: clampY(s.y, newScale) }
+              return {
+                ...s,
+                scale: newScale,
+                x: clampX(s.x, newScale),
+                y: clampY(s.y, newScale),
+              }
             })
           }
           touchPoints[t1.identifier] = { x: t1.clientX, y: t1.clientY }
@@ -154,7 +182,11 @@ export default function ZoomablePanel({
     const dx = e.clientX - drag.current.x
     const dy = e.clientY - drag.current.y
     drag.current = { active: true, x: e.clientX, y: e.clientY }
-    setTransform(prev => ({ ...prev, x: prev.x + dx, y: clampY(prev.y + dy, prev.scale) }))
+    setTransform(prev => ({
+      ...prev,
+      x: clampX(prev.x + dx, prev.scale),
+      y: clampY(prev.y + dy, prev.scale),
+    }))
   }
   function onMouseUp() { drag.current.active = false }
 
@@ -187,7 +219,13 @@ export default function ZoomablePanel({
           willChange: 'transform',
         }}
       >
-        <CardPanel card={card} label={label} imageFit={imageFit} revealed={revealed} />
+        <CardPanel
+          card={card}
+          label={label}
+          imageFit={imageFit}
+          revealed={revealed}
+          onOrientation={handleOrientation}
+        />
       </div>
 
       {/* ── Fixed overlays — outside transform, stay put while card pans ── */}
