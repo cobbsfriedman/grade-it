@@ -107,6 +107,12 @@ body {
   transform: translateY(0);
 }
 
+/* ─── Shimmer loader ─────────────────────────────────────── */
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
 /* ─── Frosted Glass Tray ─────────────────────────────────── */
 .frosted-tray {
   background: rgba(28, 28, 34, 0.7);

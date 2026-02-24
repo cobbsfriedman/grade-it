@@ -28,6 +28,7 @@ export default function CardPanel({
   onOrientation = null,
 }) {
   const [isLandscape, setIsLandscape] = useState(false)
+  const [loaded, setLoaded] = useState(false)
 
   const imageUrl    = card?.images?.front ?? null
   const placeholder = label === 'A' ? '/placeholder-a.png' : '/placeholder-b.png'
@@ -37,6 +38,7 @@ export default function CardPanel({
     const landscape = img.naturalWidth > img.naturalHeight
     setIsLandscape(landscape)
     onOrientation?.(landscape)
+    setLoaded(true)
   }
 
   let imgStyle = {}
@@ -85,6 +87,17 @@ export default function CardPanel({
 
   return (
     <div className="relative w-full h-full">
+      {/* Shimmer skeleton — shown until image loads */}
+      {!loaded && (
+        <div
+          className="absolute inset-0 z-10"
+          style={{
+            background: 'linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%)',
+            backgroundSize: '200% 100%',
+            animation: 'shimmer 1.4s infinite linear',
+          }}
+        />
+      )}
       <img
         src={imageUrl ?? placeholder}
         alt={`Card ${label}`}
