@@ -1,11 +1,5 @@
 /**
  * RevealSheet — centered modal overlay after the player guesses
- *
- * Props:
- *   open       – bool, controls fade/scale animation
- *   cardPair   – { cardA, cardB, correctAnswer, playerGuess }
- *   score      – { correct, total }
- *   onNext()   – called when player taps "Next Round"
  */
 export default function RevealSheet({ open = false, cardPair = null, score = {}, onNext }) {
   const isCorrect = cardPair?.playerGuess === cardPair?.correctAnswer
@@ -48,8 +42,18 @@ export default function RevealSheet({ open = false, cardPair = null, score = {},
   )
 }
 
+function CurvedArrow() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M2 12 C2 4 8 2 12 2" stroke="#4ade80" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M9 2 L12 2 L12 5" stroke="#4ade80" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 function CardBox({ label, card, isWinner }) {
   const href = card?.fanaticUrl ?? null
+  const gradeColor = isWinner ? 'var(--accent)' : 'var(--text-muted)'
 
   // Corner tab: A sits in upper-right, B in upper-left
   const tabStyle = label === 'A'
@@ -60,19 +64,16 @@ function CardBox({ label, card, isWinner }) {
     <div
       className="relative flex flex-col rounded-lg transition-opacity active:opacity-70"
       style={{
-        background: 'var(--surface3)',
-        border: '1px solid rgba(255,255,255,0.16)',
-        padding: '8px 10px 6px',
+        background: 'linear-gradient(180deg, #36363f 0%, #2c2c34 100%)',
+        border: '1px solid rgba(255,255,255,0.2)',
+        padding: '8px 10px 7px',
         cursor: href ? 'pointer' : 'default',
       }}
     >
-      {/* External link arrow */}
-      <span
-        className="absolute font-bold leading-none"
-        style={{ top: 6, right: 8, color: '#4ade80', fontSize: 11 }}
-      >
-        ↗
-      </span>
+      {/* Curved external link arrow */}
+      <div className="absolute" style={{ top: 7, right: 8 }}>
+        <CurvedArrow />
+      </div>
 
       {/* Logo + price */}
       <div className="flex items-center gap-2">
@@ -83,16 +84,16 @@ function CardBox({ label, card, isWinner }) {
         />
         <span
           className="font-condensed font-bold leading-none"
-          style={{ color: 'var(--text)', fontSize: '1.15rem' }}
+          style={{ color: 'var(--text)', fontSize: '1.5rem' }}
         >
           ${card.price.toLocaleString()}
         </span>
       </div>
 
-      {/* Label */}
+      {/* Buy It Now Price label */}
       <span
-        className="font-condensed uppercase tracking-wider"
-        style={{ fontSize: 9, color: 'var(--text-muted)', marginTop: 4 }}
+        className="font-condensed uppercase tracking-wider text-center"
+        style={{ fontSize: '0.72rem', color: '#ffffff', marginTop: 5 }}
       >
         Buy It Now Price
       </span>
@@ -125,21 +126,17 @@ function CardBox({ label, card, isWinner }) {
         {label}
       </div>
 
-      {/* Grade */}
+      {/* Grade — company + number as a tight single unit */}
       <div className="flex flex-col items-center pt-6 pb-3 px-2">
         <span
-          className="font-condensed uppercase tracking-wider"
-          style={{ fontSize: 9, color: 'var(--text-muted)' }}
+          className="font-condensed font-bold uppercase tracking-wide leading-none"
+          style={{ fontSize: '0.85rem', color: gradeColor, marginBottom: -2 }}
         >
           {card?.gradingCompany ?? '—'}
         </span>
         <span
           className="font-condensed font-bold leading-none"
-          style={{
-            fontSize: '2.8rem',
-            color: isWinner ? 'var(--accent)' : 'var(--text-muted)',
-            marginTop: 2,
-          }}
+          style={{ fontSize: '2.8rem', color: gradeColor }}
         >
           {card?.grade ?? '—'}
         </span>

@@ -97,7 +97,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(6, 6, 10, 0.88);
+  background: rgba(6, 6, 10, 0.62);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease;

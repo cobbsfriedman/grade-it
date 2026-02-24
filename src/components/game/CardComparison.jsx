@@ -27,10 +27,12 @@ export default function CardComparison({
   const isWinnerB = revealed && cardPair?.correctAnswer === 'B'
   const shared    = { transform, setTransform, reset }
 
+  // When revealed, always show both cards in contain (full slab) mode
+  const effectiveMode = revealed && mode === 'overlay' ? 'side' : mode
   const imageFit =
-    revealed           ? 'contain'      :
-    mode === 'side'    ? 'cover-left'   :
-    mode === 'stack'   ? 'cover-bottom' :
+    revealed                  ? 'contain'      :
+    effectiveMode === 'side'  ? 'cover-left'   :
+    effectiveMode === 'stack' ? 'cover-bottom' :
     'contain'
 
   // Overlay swipe: left = B, right = A (only when not zoomed)
@@ -55,9 +57,9 @@ export default function CardComparison({
   return (
     <div
       className="relative overflow-hidden"
-      style={{ flex: 1, display: 'flex', flexDirection: mode === 'stack' ? 'column' : 'row' }}
+      style={{ flex: 1, display: 'flex', flexDirection: effectiveMode === 'stack' ? 'column' : 'row' }}
     >
-      {mode === 'overlay' ? (
+      {effectiveMode === 'overlay' ? (
         <div
           className="flex flex-1"
           onTouchStart={onOverlayTouchStart}
