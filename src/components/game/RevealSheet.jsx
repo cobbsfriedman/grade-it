@@ -47,8 +47,8 @@ export default function RevealSheet({ open = false, cardPair = null, score = {},
         {/* Price info */}
         {(winner || loser) && (
           <div className="flex gap-3">
-            <PriceCard card={winner} />
-            <PriceCard card={loser} />
+            <PriceCard card={cardPair?.cardA} />
+            <PriceCard card={cardPair?.cardB} />
           </div>
         )}
 
