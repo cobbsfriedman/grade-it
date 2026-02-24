@@ -1,18 +1,19 @@
 /**
- * CardControls — slim bar below the comparison area, above the bottom bar.
+ * CardControls — bar below the comparison area, above the bottom bar.
  *
- * Layout: [ spacer ]  [ view icons ]  [ A ][ B ]
+ * Side / Stack:  [ spacer ] [ view icons ]
+ * Overlay:       [ spacer ] [ view icons ] | [ A | B toggle ]
  *
- * All controls flush-right, thumb-accessible.
- * Overlay mode replaces A/B labels with a sliding A|B toggle.
+ * A/B toggle only appears in overlay (full-card) mode.
+ * Vertical rule separates the two groups when both are visible.
  */
 
 function SideIcon({ active }) {
   const c = active ? 'var(--accent)' : 'var(--text-muted)'
   return (
-    <div style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-      <div style={{ width: 5, height: 11, borderRadius: 1, background: c }} />
-      <div style={{ width: 5, height: 11, borderRadius: 1, background: c }} />
+    <div style={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+      <div style={{ width: 7, height: 15, borderRadius: 2, background: c }} />
+      <div style={{ width: 7, height: 15, borderRadius: 2, background: c }} />
     </div>
   )
 }
@@ -20,16 +21,17 @@ function SideIcon({ active }) {
 function StackIcon({ active }) {
   const c = active ? 'var(--accent)' : 'var(--text-muted)'
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-      <div style={{ width: 13, height: 4, borderRadius: 1, background: c }} />
-      <div style={{ width: 13, height: 4, borderRadius: 1, background: c }} />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'center' }}>
+      <div style={{ width: 17, height: 6, borderRadius: 2, background: c }} />
+      <div style={{ width: 17, height: 6, borderRadius: 2, background: c }} />
     </div>
   )
 }
 
+// Tall vertical card shape — portrait proportions like an actual trading card
 function OverlayIcon({ active }) {
   const c = active ? 'var(--accent)' : 'var(--text-muted)'
-  return <div style={{ width: 13, height: 11, borderRadius: 1, background: c }} />
+  return <div style={{ width: 10, height: 15, borderRadius: 2, background: c }} />
 }
 
 const VIEW_MODES = [
@@ -52,35 +54,39 @@ export default function CardControls({
     borderRadius:         8,
   }
 
-  // A / B card labels — right side, 50% bigger than before, gold-accented
-  function ABLabels() {
+  // Sized to match the A/B toggle button height (40px)
+  const BTN_H = 40
+  const BTN_W = 42
+
+  function ViewModeIcons() {
     return (
-      <div className="flex items-center gap-1.5">
-        {['A', 'B'].map(id => (
-          <div
-            key={id}
-            style={{
-              ...frosted,
-              border:  '1px solid var(--accent)',
-              padding: '5px 20px',
-            }}
-          >
-            <span
-              className="font-condensed font-bold tracking-widest"
-              style={{ fontSize: 20, color: 'var(--accent)' }}
+      <div className="flex items-center gap-0.5" style={{ ...frosted, padding: '3px 4px' }}>
+        {VIEW_MODES.map(({ id, Icon }) => {
+          const active = mode === id
+          return (
+            <button
+              key={id}
+              onClick={() => onModeChange?.(id)}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                width: BTN_W, height: BTN_H, borderRadius: 6,
+                background: active ? 'var(--surface3)' : 'transparent',
+                transition: 'background 0.15s ease',
+              }}
             >
-              {id}
-            </span>
-          </div>
-        ))}
+              <Icon active={active} />
+            </button>
+          )
+        })}
       </div>
     )
   }
 
-  // Sliding A | B toggle for overlay mode — same gold style, 50% bigger
+  // Sliding A | B toggle — only shown in overlay mode
   function OverlayToggle() {
     return (
       <div className="flex" style={{ ...frosted, padding: 2, position: 'relative' }}>
+        {/* sliding indicator */}
         <div style={{
           position:      'absolute',
           top: 2, bottom: 2,
@@ -98,7 +104,7 @@ export default function CardControls({
             className="font-condensed font-bold tracking-widest"
             style={{
               position:   'relative', zIndex: 1,
-              width: 52,  height: 40, fontSize: 18, borderRadius: 6,
+              width: BTN_W, height: BTN_H, fontSize: 18, borderRadius: 6,
               color:      overlayCard === id ? 'var(--bg)' : 'var(--accent)',
               transition: 'color 0.18s ease',
             }}
@@ -110,41 +116,25 @@ export default function CardControls({
     )
   }
 
-  // View mode icon buttons — compact pill, sits just left of A/B
-  function ViewModeIcons() {
-    return (
-      <div className="flex items-center gap-0.5" style={{ ...frosted, padding: '3px 4px' }}>
-        {VIEW_MODES.map(({ id, Icon }) => {
-          const active = mode === id
-          return (
-            <button
-              key={id}
-              onClick={() => onModeChange?.(id)}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: 28, height: 24, borderRadius: 5,
-                background: active ? 'var(--surface3)' : 'transparent',
-                transition: 'background 0.15s ease',
-              }}
-            >
-              <Icon active={active} />
-            </button>
-          )
-        })}
-      </div>
-    )
-  }
-
   return (
     <div
-      className="flex items-center justify-end gap-3 pr-4 pl-4"
-      style={{ height: 52, flexShrink: 0 }}
+      className="flex items-center justify-end pr-4"
+      style={{ height: 56, flexShrink: 0, gap: 0 }}
     >
-      {/* View icons sit just left of A/B */}
       <ViewModeIcons />
 
-      {/* A/B: labels in side/stack, toggle in overlay */}
-      {mode === 'overlay' ? <OverlayToggle /> : <ABLabels />}
+      {/* Only show separator + A/B toggle in overlay (full-card) mode */}
+      {mode === 'overlay' && (
+        <>
+          {/* Vertical rule */}
+          <div style={{
+            width: 1, height: 28,
+            background: 'var(--border)',
+            margin: '0 10px',
+          }} />
+          <OverlayToggle />
+        </>
+      )}
     </div>
   )
 }

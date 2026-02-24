@@ -30,7 +30,7 @@ export default function TopBar({ score = { correct: 0, total: 0 }, card = null }
       {/* Row 2: card identity (left) + score (right) */}
       <div className="flex items-center justify-between gap-3">
         {/* Card identity */}
-        <div className="flex flex-col gap-0.5 min-w-0">
+        <div className="flex flex-col gap-0 min-w-0">
           {/* Player name — 20% larger than before (1.7rem → 2.04rem) */}
           <span
             className="font-condensed font-bold leading-tight text-text truncate"
@@ -38,11 +38,11 @@ export default function TopBar({ score = { correct: 0, total: 0 }, card = null }
           >
             {card?.playerName ?? 'Loading…'}
           </span>
-          {/* Card details — lighter color, larger text */}
+          {/* Card details — lighter color, larger text, tighter gap */}
           {card && (
             <span
               className="font-condensed truncate"
-              style={{ fontSize: '0.95rem', color: 'var(--text-mid)' }}
+              style={{ fontSize: '1.05rem', color: 'var(--text-mid)', marginTop: 0 }}
             >
               {card.year ?? '—'} · {card.set ?? '—'} · {card.gradingCompany ?? '—'}
             </span>
@@ -54,22 +54,22 @@ export default function TopBar({ score = { correct: 0, total: 0 }, card = null }
           className="flex flex-col items-end flex-shrink-0 px-3 py-1.5 rounded-lg"
           style={{ background: 'var(--surface2)' }}
         >
-          <span
-            className="font-condensed font-bold leading-none text-text"
-            style={{ fontSize: '1.9rem' }}
-          >
-            {score.correct}<span style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}> / {score.total}</span>
-          </span>
-          <div className="flex items-center gap-2 mt-0.5">
-            <span className="font-condensed text-sm" style={{ color: 'var(--text-mid)' }}>
+          <div className="flex items-baseline gap-2">
+            <span
+              className="font-condensed font-bold leading-none text-text"
+              style={{ fontSize: '1.9rem' }}
+            >
+              {score.correct}<span style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}> / {score.total}</span>
+            </span>
+            <span className="font-condensed" style={{ fontSize: '1rem', color: 'var(--text-mid)' }}>
               {accuracy}%
             </span>
-            {rank && (
-              <span className="font-condensed text-sm" style={{ color: 'var(--accent)' }}>
-                {rank}
-              </span>
-            )}
           </div>
+          {rank && (
+            <span className="font-condensed text-sm" style={{ color: 'var(--accent)' }}>
+              {rank}
+            </span>
+          )}
         </div>
       </div>
     </div>
