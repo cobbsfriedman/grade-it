@@ -37,8 +37,20 @@ export default function ZoomablePanel({
   // Keep mutable refs so event handlers (added once) always see latest values
   const setTransformRef = useRef(setTransform)
   const resetRef        = useRef(reset)
+  const revealedRef     = useRef(revealed)
   useEffect(() => { setTransformRef.current = setTransform }, [setTransform])
   useEffect(() => { resetRef.current = reset }, [reset])
+  useEffect(() => { revealedRef.current = revealed }, [revealed])
+
+  // Clamp y so the grade label (top 17% of the 125%-tall image) can never
+  // be dragged into the visible panel area. Derived from the image geometry:
+  //   label_bottom_in_panel = H × (0.5375 × scale − 0.5) + y
+  // Keeping y ≤ H × (0.5375 × scale − 0.5) keeps label_bottom ≤ 0.
+  function clampY(y, scale) {
+    if (revealedRef.current) return y
+    const H = containerRef.current?.clientHeight ?? 0
+    return Math.min(y, Math.max(0, H * (0.5375 * scale - 0.5)))
+  }
 
   // ── Touch / wheel event listeners (passive:false so we can preventDefault) ──
   useEffect(() => {
@@ -55,7 +67,7 @@ export default function ZoomablePanel({
       setTransformRef.current(prev => {
         const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, prev.scale * factor))
         if (newScale <= MIN_SCALE) return { scale: MIN_SCALE, x: 0, y: 0 }
-        return { ...prev, scale: newScale }
+        return { ...prev, scale: newScale, y: clampY(prev.y, newScale) }
       })
     }
 
@@ -86,7 +98,7 @@ export default function ZoomablePanel({
         if (prev) {
           const dx = t.clientX - prev.x
           const dy = t.clientY - prev.y
-          setTransformRef.current(s => ({ ...s, x: s.x + dx, y: s.y + dy }))
+          setTransformRef.current(s => ({ ...s, x: s.x + dx, y: clampY(s.y + dy, s.scale) }))
           touchPoints[t.identifier] = { x: t.clientX, y: t.clientY }
         }
 
@@ -103,7 +115,7 @@ export default function ZoomablePanel({
             setTransformRef.current(s => {
               const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, s.scale * factor))
               if (newScale <= MIN_SCALE) return { scale: MIN_SCALE, x: 0, y: 0 }
-              return { ...s, scale: newScale }
+              return { ...s, scale: newScale, y: clampY(s.y, newScale) }
             })
           }
           touchPoints[t1.identifier] = { x: t1.clientX, y: t1.clientY }
@@ -142,7 +154,7 @@ export default function ZoomablePanel({
     const dx = e.clientX - drag.current.x
     const dy = e.clientY - drag.current.y
     drag.current = { active: true, x: e.clientX, y: e.clientY }
-    setTransform(prev => ({ ...prev, x: prev.x + dx, y: prev.y + dy }))
+    setTransform(prev => ({ ...prev, x: prev.x + dx, y: clampY(prev.y + dy, prev.scale) }))
   }
   function onMouseUp() { drag.current.active = false }
 
