@@ -56,11 +56,7 @@ export default function RevealSheet({ open = false, cardPair = null, score = {},
         <button
           onClick={onNext}
           className="w-full py-3.5 rounded-xl font-condensed font-bold text-xl tracking-widest uppercase transition-opacity active:opacity-80"
-          style={
-            isCorrect
-              ? { background: 'linear-gradient(135deg, #f0b429 0%, #e05c2a 100%)', color: '#06060a' }
-              : { background: 'var(--surface3)', color: 'var(--text-mid)', border: '1px solid var(--border)' }
-          }
+          style={{ background: 'linear-gradient(135deg, #f0b429 0%, #e05c2a 100%)', color: '#06060a' }}
         >
           Next Round →
         </button>
@@ -97,7 +93,7 @@ function GradeCard({ label, card, isWinner }) {
 function PriceCard({ card, isWinner }) {
   if (!card?.price) return <div className="flex-1" />
 
-  const href = card.psaUrl ?? (card.certNumber ? `https://www.psacard.com/cert/${card.certNumber}` : null)
+  const href = card.fanaticUrl ?? null
 
   const inner = (
     <div
@@ -110,12 +106,12 @@ function PriceCard({ card, isWinner }) {
       <span className="text-[9px] font-condensed uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
         {card.gradingCompany} {card.grade} · Est. value
       </span>
-      <span className="font-condensed font-bold text-lg" style={{ color: isWinner ? 'var(--text)' : 'var(--text-muted)' }}>
+      <span className="font-condensed font-bold text-2xl" style={{ color: isWinner ? 'var(--text)' : 'var(--text-muted)' }}>
         ${card.price.toLocaleString()}
       </span>
       {href && (
-        <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
-          View on PSA ↗
+        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+          View on Fanatics ↗
         </span>
       )}
     </div>
