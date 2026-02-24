@@ -42,11 +42,15 @@ export default function RevealSheet({ open = false, cardPair = null, score = {},
   )
 }
 
-function CurvedArrow() {
+function ExternalLinkIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-      <path d="M2 12 C2 4 8 2 12 2" stroke="#4ade80" strokeWidth="1.8" strokeLinecap="round"/>
-      <path d="M9 2 L12 2 L12 5" stroke="#4ade80" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+      {/* Box */}
+      <path d="M5.5 2H3C2.45 2 2 2.45 2 3V10C2 10.55 2.45 11 3 11H10C10.55 11 11 10.55 11 10V7.5"
+        stroke="#4ade80" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      {/* Arrow */}
+      <path d="M7.5 2H11V5.5M11 2L6 7"
+        stroke="#4ade80" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
@@ -70,9 +74,9 @@ function CardBox({ label, card, isWinner }) {
         cursor: href ? 'pointer' : 'default',
       }}
     >
-      {/* Curved external link arrow */}
+      {/* External link icon */}
       <div className="absolute" style={{ top: 7, right: 8 }}>
-        <CurvedArrow />
+        <ExternalLinkIcon />
       </div>
 
       {/* Logo + price */}
