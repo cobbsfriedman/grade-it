@@ -49,6 +49,7 @@ export default function GameScreen() {
         overlayCard={overlayCard}
         setOverlayCard={setOverlayCard}
       />
+      <div className="gold-rule" />
 
       {/* ── Card controls (A/B labels + view mode) ───── */}
       <CardControls
@@ -57,7 +58,6 @@ export default function GameScreen() {
         overlayCard={overlayCard}
         onOverlayCard={setOverlayCard}
       />
-      <div className="gold-rule" />
 
       {/* ── Bottom bar ───────────────────────────────── */}
       <BottomBar onGuess={guess} disabled={revealed} />

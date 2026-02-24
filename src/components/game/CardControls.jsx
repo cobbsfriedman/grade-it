@@ -119,7 +119,7 @@ export default function CardControls({
   return (
     <div
       className="flex items-center justify-center"
-      style={{ height: 56, flexShrink: 0, gap: 0 }}
+      style={{ height: 62, flexShrink: 0, gap: 0, background: 'var(--surface2)' }}
     >
       <ViewModeIcons />
 

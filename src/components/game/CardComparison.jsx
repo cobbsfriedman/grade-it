@@ -44,10 +44,10 @@ export default function CardComparison({
   const divider = (
     <div style={{
       flexShrink: 0,
-      background: 'var(--border)',
+      opacity: 0.5,
       ...(mode === 'stack'
-        ? { height: '1px', width: '100%' }
-        : { width:  '1px', height: '100%' }),
+        ? { height: '1px', width: '100%', background: 'linear-gradient(90deg, transparent 0%, var(--accent) 20%, var(--accent) 80%, transparent 100%)' }
+        : { width: '1px', height: '100%', background: 'linear-gradient(180deg, transparent 0%, var(--accent) 20%, var(--accent) 80%, transparent 100%)' }),
     }} />
   )
 

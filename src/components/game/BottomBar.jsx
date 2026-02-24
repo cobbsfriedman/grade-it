@@ -12,8 +12,8 @@
 export default function BottomBar({ onGuess, disabled = false }) {
   return (
     <div
-      className="flex flex-col justify-center gap-3 px-4 py-4"
-      style={{ minHeight: 148 }}
+      className="flex flex-col justify-center gap-3 px-4 py-3"
+      style={{ minHeight: 136 }}
     >
       {/* Prompt */}
       <p className="text-center font-condensed text-3xl font-bold tracking-wide text-text uppercase">
