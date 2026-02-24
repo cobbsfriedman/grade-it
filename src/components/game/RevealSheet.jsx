@@ -47,8 +47,8 @@ export default function RevealSheet({ open = false, cardPair = null, score = {},
         {/* Price info */}
         {(winner || loser) && (
           <div className="flex gap-3">
-            <PriceCard card={winner} isWinner />
-            <PriceCard card={loser} isWinner={false} />
+            <PriceCard card={winner} />
+            <PriceCard card={loser} />
           </div>
         )}
 
@@ -90,30 +90,42 @@ function GradeCard({ label, card, isWinner }) {
   )
 }
 
-function PriceCard({ card, isWinner }) {
+function PriceCard({ card }) {
   if (!card?.price) return <div className="flex-1" />
 
   const href = card.fanaticUrl ?? null
 
   const inner = (
     <div
-      className="flex-1 flex flex-col py-2 px-3 rounded-xl gap-0.5"
+      className="flex-1 relative flex items-center gap-2 py-3 px-4 rounded-xl transition-opacity active:opacity-70"
       style={{
         background: 'var(--surface2)',
-        border: '1px solid var(--border)',
+        border: '1px solid rgba(255,255,255,0.14)',
+        cursor: href ? 'pointer' : 'default',
       }}
     >
-      <span className="text-[9px] font-condensed uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-        {card.gradingCompany} {card.grade} · Est. value
+      {/* Green external-link indicator */}
+      <span
+        className="absolute top-2 right-2 font-bold text-sm leading-none"
+        style={{ color: '#4ade80' }}
+      >
+        ↗
       </span>
-      <span className="font-condensed font-bold text-2xl" style={{ color: isWinner ? 'var(--text)' : 'var(--text-muted)' }}>
+
+      {/* Price */}
+      <span
+        className="font-condensed font-bold leading-none"
+        style={{ color: 'var(--text)', fontSize: '1.95rem' }}
+      >
         ${card.price.toLocaleString()}
       </span>
-      {href && (
-        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-          View on Fanatics ↗
-        </span>
-      )}
+
+      {/* Fanatics logo */}
+      <img
+        src="https://www.fanaticscollect.com/favicon.ico"
+        alt="Fanatics Collect"
+        className="w-6 h-6 ml-auto rounded"
+      />
     </div>
   )
 
