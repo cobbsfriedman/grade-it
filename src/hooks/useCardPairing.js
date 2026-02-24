@@ -1,9 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { getAllCards, buildPairs, shuffleArray } from '../firebase/cardService'
 
-// How many pairs to use. Keeping this small speeds up testing.
-// Set to Infinity to use all pairs from Firestore.
-const MAX_PAIRS = 6
+const MAX_PAIRS = Infinity
 
 /**
  * useCardPairing — loads all cards from Firestore once, builds a shuffled
