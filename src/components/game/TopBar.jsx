@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 
 /**
- * TopBar — fixed 148px top section
+ * TopBar — top section
  *
- * Contains:
- *   • Wordmark (left) + back arrow (right)
- *   • Score display: "34 / 51" + accuracy chip + rank badge
- *   • Card identity: "NOW GRADING" eyebrow + player name + meta pills
+ * Row 1: Wordmark (left) + quit (right)
+ * Row 2: Card identity (left) + score (right)
  */
 export default function TopBar({ score = { correct: 0, total: 0 }, card = null }) {
   const navigate = useNavigate()
@@ -33,51 +31,54 @@ export default function TopBar({ score = { correct: 0, total: 0 }, card = null }
       <div className="flex items-center justify-between gap-3">
         {/* Card identity */}
         <div className="flex flex-col gap-0.5 min-w-0">
-          <span className="font-condensed font-bold leading-tight text-text truncate" style={{ fontSize: '1.7rem' }}>
+          {/* Player name — 20% larger than before (1.7rem → 2.04rem) */}
+          <span
+            className="font-condensed font-bold leading-tight text-text truncate"
+            style={{ fontSize: '2.05rem' }}
+          >
             {card?.playerName ?? 'Loading…'}
           </span>
+          {/* Card details — lighter color, larger text */}
           {card && (
-            <span className="font-condensed text-sm truncate" style={{ color: 'var(--text-muted)' }}>
+            <span
+              className="font-condensed truncate"
+              style={{ fontSize: '0.95rem', color: 'var(--text-mid)' }}
+            >
               {card.year ?? '—'} · {card.set ?? '—'} · {card.gradingCompany ?? '—'}
             </span>
           )}
         </div>
 
-        {/* Score — single row with subtle background */}
+        {/* Score — much bigger */}
         <div
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg flex-shrink-0"
+          className="flex flex-col items-end flex-shrink-0 px-3 py-1.5 rounded-lg"
           style={{ background: 'var(--surface2)' }}
         >
-          <span className="font-condensed font-bold text-base leading-none text-text">
-            {score.correct} / {score.total}
+          <span
+            className="font-condensed font-bold leading-none text-text"
+            style={{ fontSize: '1.9rem' }}
+          >
+            {score.correct}<span style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}> / {score.total}</span>
           </span>
-          <span style={{ color: 'var(--border)', fontSize: 10 }}>|</span>
-          <span className="font-condensed text-sm" style={{ color: 'var(--text-mid)' }}>
-            {accuracy}%
-          </span>
-          {rank && (
-            <>
-              <span style={{ color: 'var(--border)', fontSize: 10 }}>|</span>
+          <div className="flex items-center gap-2 mt-0.5">
+            <span className="font-condensed text-sm" style={{ color: 'var(--text-mid)' }}>
+              {accuracy}%
+            </span>
+            {rank && (
               <span className="font-condensed text-sm" style={{ color: 'var(--accent)' }}>
                 {rank}
               </span>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-/**
- * Rank calculation from spec:
- * accuracy ≥ 80% after ≥ 20 rounds → Gold
- * accuracy ≥ 65% after ≥ 10 rounds → Silver
- * accuracy ≥ 50% after ≥ 5 rounds  → Bronze
- */
 function getRank(accuracy, total) {
   if (total >= 20 && accuracy >= 80) return '🥇 Gold'
   if (total >= 10 && accuracy >= 65) return '🥈 Silver'
-  if (total >= 5 && accuracy >= 50)  return '🥉 Bronze'
+  if (total >= 5  && accuracy >= 50) return '🥉 Bronze'
   return null
 }

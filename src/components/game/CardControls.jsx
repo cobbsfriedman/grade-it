@@ -1,13 +1,10 @@
 /**
  * CardControls — slim bar below the comparison area, above the bottom bar.
  *
- * Side / Stack mode:
- *   [ A ]  [ side | stack | overlay ]  [ B ]
+ * Layout: [ spacer ]  [ view icons ]  [ A ][ B ]
  *
- * Overlay mode:
- *   [ A | B toggle ]  [ side | stack | overlay ]  [ — ]
- *
- * All controls are in the thumb zone, outside the card touch area.
+ * All controls flush-right, thumb-accessible.
+ * Overlay mode replaces A/B labels with a sliding A|B toggle.
  */
 
 function SideIcon({ active }) {
@@ -47,52 +44,62 @@ export default function CardControls({
   overlayCard  = 'A',
   onOverlayCard,
 }) {
-  const pillStyle = {
-    background:          'rgba(14,14,18,0.82)',
-    backdropFilter:      'blur(14px)',
-    WebkitBackdropFilter:'blur(14px)',
-    border:              '1px solid var(--border)',
-    borderRadius:        8,
+  const frosted = {
+    background:           'rgba(14,14,18,0.82)',
+    backdropFilter:       'blur(14px)',
+    WebkitBackdropFilter: 'blur(14px)',
+    border:               '1px solid var(--border)',
+    borderRadius:         8,
   }
 
-  // A / B card label pill (side + stack modes)
-  function CardLabel({ id }) {
+  // A / B card labels — right side, 50% bigger than before, gold-accented
+  function ABLabels() {
     return (
-      <div style={{ ...pillStyle, padding: '4px 14px' }}>
-        <span
-          className="font-condensed font-bold tracking-widest uppercase"
-          style={{ fontSize: 13, color: 'var(--text-muted)' }}
-        >
-          {id}
-        </span>
+      <div className="flex items-center gap-1.5">
+        {['A', 'B'].map(id => (
+          <div
+            key={id}
+            style={{
+              ...frosted,
+              border:  '1px solid var(--accent)',
+              padding: '5px 20px',
+            }}
+          >
+            <span
+              className="font-condensed font-bold tracking-widest"
+              style={{ fontSize: 20, color: 'var(--accent)' }}
+            >
+              {id}
+            </span>
+          </div>
+        ))}
       </div>
     )
   }
 
-  // A | B sliding toggle (overlay mode)
+  // Sliding A | B toggle for overlay mode — same gold style, 50% bigger
   function OverlayToggle() {
     return (
-      <div className="flex" style={{ ...pillStyle, padding: 2 }}>
-        {/* sliding indicator */}
+      <div className="flex" style={{ ...frosted, padding: 2, position: 'relative' }}>
         <div style={{
-          position:   'absolute',
+          position:      'absolute',
           top: 2, bottom: 2,
-          width:      'calc(50% - 2px)',
-          left:       overlayCard === 'A' ? 2 : 'calc(50%)',
-          background: 'var(--accent)',
-          borderRadius: 6,
-          transition: 'left 0.18s cubic-bezier(.4,0,.2,1)',
+          width:         'calc(50% - 2px)',
+          left:          overlayCard === 'A' ? 2 : 'calc(50%)',
+          background:    'var(--accent)',
+          borderRadius:  6,
+          transition:    'left 0.18s cubic-bezier(.4,0,.2,1)',
           pointerEvents: 'none',
         }} />
         {['A', 'B'].map(id => (
           <button
             key={id}
             onClick={() => onOverlayCard?.(id)}
-            className="font-condensed font-bold tracking-wider"
+            className="font-condensed font-bold tracking-widest"
             style={{
-              position: 'relative', zIndex: 1,
-              width: 36, height: 28, fontSize: 12, borderRadius: 6,
-              color: overlayCard === id ? 'var(--bg)' : 'var(--text-muted)',
+              position:   'relative', zIndex: 1,
+              width: 52,  height: 40, fontSize: 18, borderRadius: 6,
+              color:      overlayCard === id ? 'var(--bg)' : 'var(--accent)',
               transition: 'color 0.18s ease',
             }}
           >
@@ -103,10 +110,10 @@ export default function CardControls({
     )
   }
 
-  // View mode icon buttons
+  // View mode icon buttons — compact pill, sits just left of A/B
   function ViewModeIcons() {
     return (
-      <div className="flex items-center gap-0.5" style={{ ...pillStyle, padding: '3px 4px' }}>
+      <div className="flex items-center gap-0.5" style={{ ...frosted, padding: '3px 4px' }}>
         {VIEW_MODES.map(({ id, Icon }) => {
           const active = mode === id
           return (
@@ -130,22 +137,14 @@ export default function CardControls({
 
   return (
     <div
-      className="flex items-center justify-between px-4"
-      style={{ height: 44, flexShrink: 0 }}
+      className="flex items-center justify-end gap-3 pr-4 pl-4"
+      style={{ height: 52, flexShrink: 0 }}
     >
-      {/* Left: card A label / overlay toggle */}
-      <div style={{ position: 'relative' }}>
-        {mode === 'overlay' ? <OverlayToggle /> : <CardLabel id="A" />}
-      </div>
-
-      {/* Center: view mode icons */}
+      {/* View icons sit just left of A/B */}
       <ViewModeIcons />
 
-      {/* Right: card B label / spacer */}
-      {mode === 'overlay'
-        ? <div style={{ width: 44 }} />
-        : <CardLabel id="B" />
-      }
+      {/* A/B: labels in side/stack, toggle in overlay */}
+      {mode === 'overlay' ? <OverlayToggle /> : <ABLabels />}
     </div>
   )
 }
