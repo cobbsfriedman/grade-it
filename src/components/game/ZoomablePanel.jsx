@@ -185,26 +185,12 @@ export default function ZoomablePanel({
           transform: `translate(${x}px, ${y}px) scale(${scale})`,
           transformOrigin: 'center center',
           willChange: 'transform',
-          // Smooth snap-back on reset; no transition during active gestures
-          transition: isZoomed ? 'none' : 'transform 0.25s ease',
         }}
       >
         <CardPanel card={card} label={label} imageFit={imageFit} revealed={revealed} />
       </div>
 
       {/* ── Fixed overlays — outside transform, stay put while card pans ── */}
-
-      {/* A / B badge — bottom-center, shown before reveal */}
-      {!revealed && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
-          <span
-            className="font-condensed font-bold text-xs tracking-widest uppercase px-2 py-0.5 rounded"
-            style={{ background: 'var(--surface3)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}
-          >
-            {label}
-          </span>
-        </div>
-      )}
 
       {/* Winner glow border */}
       {revealed && isWinner && (

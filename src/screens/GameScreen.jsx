@@ -1,11 +1,15 @@
+import { useState } from 'react'
 import TopBar from '../components/game/TopBar'
 import CardComparison from '../components/game/CardComparison'
+import CardControls from '../components/game/CardControls'
 import BottomBar from '../components/game/BottomBar'
 import RevealSheet from '../components/game/RevealSheet'
 import useGameState from '../hooks/useGameState'
 
 export default function GameScreen() {
   const { score, round, cardPair, revealed, guess, nextRound, loading, error } = useGameState()
+  const [viewMode,    setViewMode]    = useState('side')
+  const [overlayCard, setOverlayCard] = useState('A')
 
   if (error) {
     return (
@@ -38,7 +42,21 @@ export default function GameScreen() {
       <div className="gold-rule" />
 
       {/* ── Comparison area ──────────────────────────── */}
-      <CardComparison cardPair={cardPair} revealed={revealed} />
+      <CardComparison
+        cardPair={cardPair}
+        revealed={revealed}
+        mode={viewMode}
+        overlayCard={overlayCard}
+        setOverlayCard={setOverlayCard}
+      />
+
+      {/* ── Card controls (A/B labels + view mode) ───── */}
+      <CardControls
+        mode={viewMode}
+        onModeChange={setViewMode}
+        overlayCard={overlayCard}
+        onOverlayCard={setOverlayCard}
+      />
       <div className="gold-rule" />
 
       {/* ── Bottom bar ───────────────────────────────── */}
