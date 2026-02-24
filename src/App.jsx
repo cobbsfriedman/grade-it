@@ -4,7 +4,7 @@ import GameScreen from './screens/GameScreen'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/projects/grade-it">
       <div className="app-shell">
         <Routes>
           <Route path="/" element={<HomeScreen />} />
