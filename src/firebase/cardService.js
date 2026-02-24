@@ -40,6 +40,8 @@ export function buildPairs(cards) {
     // Check every combination within the group
     for (let i = 0; i < group.length; i++) {
       for (let j = i + 1; j < group.length; j++) {
+        // Only pair cards that both have real images — no placeholder pairs
+        if (!group[i].images?.front || !group[j].images?.front) continue
         if (isValidPair(group[i], group[j])) {
           // Randomly assign which copy is Card A and which is Card B
           const [cardA, cardB] =

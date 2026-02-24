@@ -183,21 +183,10 @@ export default function ZoomablePanel({
           transition: isZoomed ? 'none' : 'transform 0.25s ease',
         }}
       >
-        <CardPanel card={card} label={label} imageFit={imageFit} />
+        <CardPanel card={card} label={label} imageFit={imageFit} revealed={revealed} />
       </div>
 
       {/* ── Fixed overlays — outside transform, stay put while card pans ── */}
-
-      {/* Label mask — covers top ~20% of the panel to hide PSA/BGS grade label
-          before the user guesses. Fanatics vault images are consistently framed
-          with the label occupying the top ~17% of the image, so this reliably
-          hides it. Removed after reveal so the full slab is viewable. */}
-      {!revealed && card?.images?.front && (
-        <div
-          className="absolute left-0 right-0 top-0 pointer-events-none"
-          style={{ zIndex: 15, height: '20%', background: 'linear-gradient(to bottom, var(--surface2) 60%, transparent)' }}
-        />
-      )}
 
       {/* A / B badge — top-left corner */}
       <div className="absolute top-2 left-2 z-20 pointer-events-none">
