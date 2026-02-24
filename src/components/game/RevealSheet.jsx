@@ -97,24 +97,35 @@ function GradeCard({ label, card, isWinner }) {
 function PriceCard({ card, isWinner }) {
   if (!card?.price) return <div className="flex-1" />
 
-  return (
-    <a
-      href={card.ebayUrl ?? '#'}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex-1 flex flex-col py-2 px-3 rounded-xl gap-0.5 no-underline"
+  const href = card.psaUrl ?? (card.certNumber ? `https://www.psacard.com/cert/${card.certNumber}` : null)
+
+  const inner = (
+    <div
+      className="flex-1 flex flex-col py-2 px-3 rounded-xl gap-0.5"
       style={{
         background: 'var(--surface2)',
         border: '1px solid var(--border)',
       }}
     >
       <span className="text-[9px] font-condensed uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-        {card.gradingCompany} {card.grade} · Last sold ↗
+        {card.gradingCompany} {card.grade} · Est. value
       </span>
       <span className="font-condensed font-bold text-lg" style={{ color: isWinner ? 'var(--text)' : 'var(--text-muted)' }}>
         ${card.price.toLocaleString()}
       </span>
-      <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>eBay</span>
+      {href && (
+        <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+          View on PSA ↗
+        </span>
+      )}
+    </div>
+  )
+
+  if (!href) return inner
+
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="flex-1 no-underline">
+      {inner}
     </a>
   )
 }

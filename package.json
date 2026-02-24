@@ -8,7 +8,14 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "seed": "node scripts/seedFirestore.js"
+    "seed": "node scripts/seedFirestore.js",
+    "import:csv": "node scripts/importFromCSV.js",
+    "set-certs": "node scripts/setCertNumbers.js",
+    "set-fanatics": "node scripts/setFanaticsUrls.js",
+    "enrich:fanatics": "node scripts/enrichFromFanatics.js",
+    "enrich:fanatics:test": "TEST_LIMIT=6 node scripts/enrichFromFanatics.js",
+    "enrich": "node scripts/enrichFromPSA.js",
+    "enrich:test": "TEST_LIMIT=6 node scripts/enrichFromPSA.js"
   },
   "dependencies": {
     "firebase": "^10.14.1",

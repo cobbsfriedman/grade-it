@@ -1,12 +1,16 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { getAllCards, buildPairs, shuffleArray } from '../firebase/cardService'
 
+// How many pairs to use. Keeping this small speeds up testing.
+// Set to Infinity to use all pairs from Firestore.
+const MAX_PAIRS = 6
+
 /**
  * useCardPairing — loads all cards from Firestore once, builds a shuffled
  * pair queue, and vends one pair per round.
  *
  * Queue behaviour:
- *   • All 50 pairs are shuffled on load.
+ *   • Up to MAX_PAIRS pairs are shuffled on load.
  *   • loadNextPair() advances through the queue.
  *   • When the queue is exhausted the deck reshuffles and restarts,
  *     so the game never runs out of rounds.
@@ -37,7 +41,7 @@ export default function useCardPairing() {
       try {
         setLoading(true)
         const cards = await getAllCards()
-        const pairs = buildPairs(cards)
+        const pairs = buildPairs(cards).slice(0, MAX_PAIRS)
 
         if (pairs.length === 0) {
           throw new Error('No valid card pairs found. Make sure the seed script has been run.')
